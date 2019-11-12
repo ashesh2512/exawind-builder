@@ -96,15 +96,24 @@ exw_init_spack ()
         echo "==> Setting up spack compiler and package settings"
         local have_packages_yaml=no
         local have_compiler_yaml=no
+        local spackos=$(uname -s | tr "[:upper:]" "[:lower:]")
+
+        if [ ! -d spack/etc/${spackos} ] ; then
+            mkdir spack/etc/${spackos}
+        fi
 
         if [ -d ${ewblddir}/etc/spack/${exwsys} ] ; then
             local cfgdir=${ewblddir}/etc/spack/${exwsys}
+
+            # Copy the base packages.yaml common to all systems
+            cp ${ewblddir}/etc/spack/spack/packages.yaml spack/etc/spack/packages.yaml
+
             if [ "${check_homebrew}" = "yes" ]; then
                 local brew_prefix=$(brew config | awk -F: '/HOMEBREW_PREFIX/ {print $2;}')
-                sed -e "s#/usr/local#${brew_prefix}#g" ${cfgdir}/packages.yaml > spack/etc/spack/packages.yaml
+                sed -e "s#/usr/local#${brew_prefix}#g" ${cfgdir}/packages.yaml > spack/etc/spack/${spackos}/packages.yaml
                 have_packages_yaml=yes
             elif [ -f ${cfgdir}/packages.yaml ] ; then
-                ln -s ${cfgdir}/packages.yaml spack/etc/spack/
+                ln -s ${cfgdir}/packages.yaml spack/etc/spack/${spackos}
                 have_packages_yaml=yes
             fi
 
