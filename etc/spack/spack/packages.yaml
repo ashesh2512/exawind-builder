@@ -34,10 +34,13 @@ packages:
     version: [1.10.4]
     variants: +mpi+cxx+hl
   netcdf:
-    version: [4.6.1]
+    version: [4.7.1]
+    variants: +parallel-netcdf maxdims=65536 maxvars=524288
+  netcdf-c:
+    version: [4.7.1]
     variants: +parallel-netcdf maxdims=65536 maxvars=524288
   parallel-netcdf:
-    version: [1.8.0]
+    version: [1.11.2]
   superlu:
     version: [4.3]
   netlib-lapack:
