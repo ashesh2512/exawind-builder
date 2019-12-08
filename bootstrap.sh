@@ -94,7 +94,6 @@ exw_init_spack ()
 
     if [ "${need_setup}" = "yes" ] ; then
         echo "==> Setting up spack compiler and package settings"
-        local have_packages_yaml=no
         local have_compiler_yaml=no
         local spackos=$(uname -s | tr "[:upper:]" "[:lower:]")
 
@@ -111,10 +110,8 @@ exw_init_spack ()
             if [ "${check_homebrew}" = "yes" ]; then
                 local brew_prefix=$(brew config | awk -F: '/HOMEBREW_PREFIX/ {print $2;}')
                 sed -e "s#/usr/local#${brew_prefix}#g" ${cfgdir}/packages.yaml > spack/etc/spack/${spackos}/packages.yaml
-                have_packages_yaml=yes
             elif [ -f ${cfgdir}/packages.yaml ] ; then
                 ln -s ${cfgdir}/packages.yaml spack/etc/spack/${spackos}
-                have_packages_yaml=yes
             fi
 
             if [ -f ${cfgdir}/compilers.yaml ] ; then
@@ -127,9 +124,7 @@ exw_init_spack ()
             fi
         fi
 
-        if [ "${have_packages_yaml}" = "no" ] ; then
-            ln -s ${ewblddir}/etc/spack/spack/packages.yaml spack/etc/spack
-        fi
+        ln -s ${ewblddir}/etc/spack/spack/packages.yaml spack/etc/spack
     fi
 
     source spack/share/spack/setup-env.sh
